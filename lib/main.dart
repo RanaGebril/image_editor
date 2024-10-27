@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_projec/edit.dart';
 import 'package:image_projec/home.dart';
-import 'package:image_projec/splash_screen.dart';
 
 
 void main() {
@@ -12,8 +11,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SplashScreen(),
       debugShowCheckedModeBanner: false,
+      initialRoute: HomeScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         EditScreen.routeName:(context)=>EditScreen(),
