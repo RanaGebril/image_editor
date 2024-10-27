@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_projec/edit.dart';
-import 'package:image_projec/home.dart';
+import 'package:image_projec/edit_screen.dart';
+import 'package:image_projec/home_screen.dart';
 import 'package:image_projec/splash_screen.dart';
 
 

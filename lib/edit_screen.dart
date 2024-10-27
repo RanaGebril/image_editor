@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_projec/BottomNavigationItem.dart';
+import 'package:image_projec/bottom_navigation_item.dart';
 
 class EditScreen extends StatelessWidget{
   static String routeName='edit';
