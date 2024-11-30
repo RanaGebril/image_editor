@@ -5,7 +5,6 @@ import 'edit.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = 'home';
-  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -41,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: Icon(Icons.camera_alt, size: 30),
                         onPressed: () {
                           Navigator.pop(context);
-                          _pickImage(ImageSource.camera); // Camera option
+                          _pickImage(ImageSource.camera);
                         },
                       ),
                       Text('Camera'),
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: Icon(Icons.photo_library, size: 30),
                         onPressed: () {
                           Navigator.pop(context);
-                          _pickImage(ImageSource.gallery); // Gallery option
+                          _pickImage(ImageSource.gallery);
                         },
                       ),
                       Text('Gallery'),
@@ -70,23 +69,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await picker.pickImage(source: source);
-    setState(() {
-      if (pickedFile != null) {
+    if (pickedFile != null) {
+      setState(() {
         image = File(pickedFile.path);
-        Navigator.pushNamed(context,
-            EditScreen.routeName,
-        arguments: image!.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+        Navigator.pushNamed(
+          context,
+          EditScreen.routeName,
+          arguments: image!.path,
+        );
+      });
+    } else {
+      print('No image selected.');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: MediaQuery.of(context).size.width, // Set width to screen width
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/homeP.jpg'),
@@ -110,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Text(
-                  "Best photo editing! ",
+                  "Best photo editing!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -147,13 +148,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        "Select A Photo",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        "Choose Image",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 80),
               ],
             ),
           ),

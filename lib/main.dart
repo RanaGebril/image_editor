@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_projec/edit.dart';
-import 'package:image_projec/home.dart';
-
+import 'home.dart';
+import 'edit.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
       initialRoute: HomeScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
-        EditScreen.routeName:(context)=>EditScreen(),
+        EditScreen.routeName: (context) => EditScreen(),
       },
     );
   }
