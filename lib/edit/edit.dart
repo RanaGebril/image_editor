@@ -1,8 +1,11 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_projec/BottomNavigationItem.dart';
 import 'package:image_projec/edit_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../adjustments_widget.dart';
 
 class EditScreen extends StatefulWidget {
   static String routeName = 'edit';
@@ -64,7 +67,7 @@ class _EditScreenState extends State<EditScreen> {
                   ),
                   BottomNavigationItem(
                     onpressed: () {
-
+                      // Implement Resize functionality here
                     },
                     title: 'Resize',
                     icon: Icons.photo_size_select_large,
@@ -92,9 +95,19 @@ class _EditScreenState extends State<EditScreen> {
                   ),
                 ),
               ),
+              AdjustmentsWidget(
+                onBrightnessChanged: (brightness) {
+                  // Handle brightness change
+                },
+                onContrastChanged: (contrast) {
+                  // Handle contrast change
+                },
+                onBorderShapeChanged: (borderShape) {
+                  // Handle border shape change
+                },
+              ),
             ],
           ),
-
         );
       },
     );
