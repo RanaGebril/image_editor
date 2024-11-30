@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'edit.dart';
+import 'package:image_projec/edit/edit.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = 'home';
@@ -12,7 +12,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //File variable image, which will store the selected image file.
   File? image;
+
+  //ImagePicker instance named picker, which will handle selecting images.
   final picker = ImagePicker();
 
   void showImageSourceBottomSheet() {
@@ -72,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final pickedFile = await picker.pickImage(source: source);
     setState(() {
       if (pickedFile != null) {
+        // If an image is selected, it is stored in image as a File object.
         image = File(pickedFile.path);
         Navigator.pushNamed(context,
             EditScreen.routeName,
