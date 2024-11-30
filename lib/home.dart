@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'edit.dart';
+import 'package:image_projec/edit/edit.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = 'home';

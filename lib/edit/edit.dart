@@ -12,7 +12,6 @@ class EditScreen extends StatefulWidget {
 }
 
 class _EditScreenState extends State<EditScreen> {
-
   @override
   Widget build(BuildContext context) {
     var selectedImage = ModalRoute.of(context)?.settings.arguments as String;
@@ -44,16 +43,16 @@ class _EditScreenState extends State<EditScreen> {
               child: Row(
                 children: [
                   BottomNavigationItem(
-                    onpressed: () {
-                      edit_provider.rotate_image();
+                    onpressed: () async {
+                      // Pass the image to be cropped
+                      if (edit_provider.croppedImage != null) {
+                        await edit_provider.cropImage(edit_provider.croppedImage!);
+                      } else {
+                        // If no cropped image, pass the selected image
+                        await edit_provider.cropImage(File(selectedImage));
+                      }
                     },
-                    title: 'Rotate',
-                    icon: Icons.rotate_left,
-                  ),
-                  BottomNavigationItem(
-                    onpressed: () {
-                    },
-                    title: 'crop',
+                    title: 'Crop & Rotate',
                     icon: Icons.crop,
                   ),
                   BottomNavigationItem(
@@ -78,14 +77,18 @@ class _EditScreenState extends State<EditScreen> {
             children: [
               Center(
                 child: Container(
-                  child: Transform.rotate(
-                    angle: edit_provider.rotation_angle, // Apply rotation angle
-                    child: Image.file(
-                      File(selectedImage),
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      fit: BoxFit.fill,
-                    ),
+                  child: edit_provider.croppedImage != null
+                      ? Image.file(
+                    edit_provider.croppedImage!,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    fit: BoxFit.fill,
+                  )
+                      : Image.file(
+                    File(selectedImage),
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),

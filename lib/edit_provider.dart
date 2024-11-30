@@ -1,17 +1,45 @@
+import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 
-class EditProvider extends ChangeNotifier{
-  double rotation_angle = 0; // Rotation angle in radians
+class EditProvider extends ChangeNotifier {
 
-  rotate_image() {
-//convert from degrees to radian
-    rotation_angle += 90 * (3.14 / 180); // Rotate by 90 degrees
+  File? croppedImage;
+
+  // Set the cropped image
+  void setCroppedImage(File image) {
+    croppedImage = image;
     notifyListeners();
   }
 
-  crop_image() {
+  // Crop the image with custom UI settings
+  Future<void> cropImage(File imageFile) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      androidUiSettings: AndroidUiSettings(
+        toolbarTitle: 'Custom Crop Image',
+        // Custom title for toolbar
+        initAspectRatio: CropAspectRatioPreset.original,
+        // Default aspect ratio for cropping
+        lockAspectRatio: false,
+        toolbarColor: Colors.deepPurple,
+        // Toolbar color
+        toolbarWidgetColor: Colors.white,
+        // Widget color in toolbar
+        activeControlsWidgetColor: Colors.deepPurple,
+        cropFrameColor: Colors.white,
+        cropGridColor: Colors.white,
 
+      ),
+    );
 
-    notifyListeners();
-  }
-}
+    if (croppedFile != null) {
+      setCroppedImage(File(croppedFile.path)); // Set the cropped image result
+    }
+  }}
