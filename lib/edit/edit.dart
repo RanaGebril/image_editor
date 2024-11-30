@@ -53,18 +53,18 @@ class _EditScreenState extends State<EditScreen> {
                       }
                     },
                     title: 'Crop & Rotate',
-                    icon: Icons.crop,
+                    icon: Icons.crop_rotate,
                   ),
                   BottomNavigationItem(
                     onpressed: () {
-                      // Add functionality for translation
+                      edit_provider.toggleMirror();
                     },
-                    title: 'Translate',
-                    icon: Icons.enhance_photo_translate,
+                    title: 'Mirror',
+                    icon: Icons.flip,
                   ),
                   BottomNavigationItem(
                     onpressed: () {
-                      // Add functionality for resizing
+
                     },
                     title: 'Resize',
                     icon: Icons.photo_size_select_large,
@@ -94,6 +94,7 @@ class _EditScreenState extends State<EditScreen> {
               ),
             ],
           ),
+
         );
       },
     );

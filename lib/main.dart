@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
         routes: {
           HomeScreen.routeName: (context) => HomeScreen(),
           EditScreen.routeName: (context) => EditScreen(),
+
         },
       ),
     );
