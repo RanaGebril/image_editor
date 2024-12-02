@@ -1,9 +1,12 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_projec/BottomNavigationItem.dart';
 import 'package:image_projec/edit/filter/filter_screen.dart';
 import 'package:image_projec/edit_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../adjustments_widget.dart';
 
 class EditScreen extends StatefulWidget {
   static String routeName = 'edit';
@@ -20,13 +23,8 @@ class _EditScreenState extends State<EditScreen> {
 
     return ChangeNotifierProvider(
       create: (context) => EditProvider(),
-      child: Consumer<EditProvider>(  // Use Consumer to get the provider's state
+      child: Consumer<EditProvider>(
         builder: (context, editProvider, child) {
-          // Initialize the original image when the provider is created
-          if (editProvider.originalImage == null) {
-            editProvider.setOriginalImage(File(selectedImage));
-          }
-
           return Scaffold(
             backgroundColor: const Color(0xff0e0d0d),
             appBar: AppBar(
@@ -60,14 +58,14 @@ class _EditScreenState extends State<EditScreen> {
                         }
                       },
                       title: 'Crop & Rotate',
-                      Icons.crop_rotate,
+                      icon: Icons.crop_rotate,
                     ),
                     BottomNavigationItem(
                       onpressed: () {
-                       // editProvider.toggleMirror();
+                        editProvider.toggleMirror(); // Implement the mirror toggle
                       },
                       title: 'Mirror',
-                       Icons.flip,
+                      icon: Icons.flip,
                     ),
                     BottomNavigationItem(
                       onpressed: () {
@@ -75,35 +73,27 @@ class _EditScreenState extends State<EditScreen> {
                         Navigator.pushNamed(
                           context,
                           FilterScreen.routeName,
-                          arguments: imageFile, // Pass a File object
+                          arguments: imageFile, // Pass the File object
                         );
                       },
                       title: 'Filters',
-                       Icons.filter_vintage_outlined,
+                      icon: Icons.filter_vintage_outlined,
                     ),
                   ],
                 ),
               ),
             ),
             body: Center(
-              child: Consumer<EditProvider>(
-                builder: (context, editProvider, child) {
+              child: Container(
+                child: Image.file(
                   // Display the currently edited image (cropped or filtered image)
-                  final displayImage = editProvider.croppedImage ?? File(selectedImage);
-
-                  return Container(
-                    child: Image.file(
-                      displayImage,
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      fit: BoxFit.contain,
-                    ),
-                  );
-                },
+                  editProvider.croppedImage ?? File(selectedImage),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-
-
           );
         },
       ),

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_projec/edit/edit.dart';
@@ -12,10 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //File variable image, which will store the selected image file.
   File? image;
-
-  //ImagePicker instance named picker, which will handle selecting images.
   final picker = ImagePicker();
 
   void showImageSourceBottomSheet() {
@@ -42,24 +40,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.camera_alt, size: 30),
-                        onPressed: () {
+                        onPressed: () async {
+                          final pickedFile = await picker.pickImage(
+                              source: ImageSource.camera);
+                          if (pickedFile != null) {
+                            setState(() {
+                              image = File(pickedFile.path);
+                            });
+                          }
                           Navigator.pop(context);
-                          _pickImage(ImageSource.camera); // Camera option
                         },
                       ),
-                      Text('Camera'),
+                      Text('Camera')
                     ],
                   ),
                   Column(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.photo_library, size: 30),
-                        onPressed: () {
+                        icon: Icon(Icons.photo, size: 30),
+                        onPressed: () async {
+                          final pickedFile = await picker.pickImage(
+                              source: ImageSource.gallery);
+                          if (pickedFile != null) {
+                            setState(() {
+                              image = File(pickedFile.path);
+                            });
+                          }
                           Navigator.pop(context);
-                          _pickImage(ImageSource.gallery); // Gallery option
                         },
                       ),
-                      Text('Gallery'),
+                      Text('Gallery')
                     ],
                   ),
                 ],
@@ -71,96 +81,34 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source);
-    setState(() {
-      if (pickedFile != null) {
-        // If an image is selected, it is stored in image as a File object.
-        image = File(pickedFile.path);
-        Navigator.pushNamed(context,
-            EditScreen.routeName,
-        arguments: image!.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width, // Set width to screen width
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/homeP.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomRight,
-              colors: [
-                Colors.black.withOpacity(.4),
-                Colors.black.withOpacity(.1),
-              ],
+      appBar: AppBar(title: Text('Image Editing App')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            image != null ? Image.file(image!) : Text('No Image Selected'),
+            ElevatedButton(
+              onPressed: () {
+                showImageSourceBottomSheet();
+              },
+              child: Text('Select Image'),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Text(
-                  "Best photo editing! ",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 37,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  "It contains a lot of photo editing tools",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                ),
-                SizedBox(height: 20),
-                InkWell(
-                  onTap: showImageSourceBottomSheet,
-                  child: Container(
-                    height: 50,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          spreadRadius: 5,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Select A Photo",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 80),
-              ],
+            ElevatedButton(
+              onPressed: () {
+                if (image != null) {
+                  Navigator.pushNamed(
+                    context,
+                    EditScreen.routeName,
+                    arguments: image!.path,
+                  );
+                }
+              },
+              child: Text('Edit Image'),
             ),
-          ),
+          ],
         ),
       ),
     );

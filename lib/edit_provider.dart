@@ -1,34 +1,33 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
-
+import 'package:image_cropper/image_cropper.dart';
 
 class EditProvider extends ChangeNotifier {
-
   File? croppedImage;
-  Uint8List?  currentImage;
+  Uint8List? currentImage;
   File? originalImage; // Store the original image
   bool isMirrored = false; // Track mirroring state
 
+  // Set the original image and initialize croppedImage to the original image
   void setOriginalImage(File image) {
     originalImage = image;
     croppedImage = image; // Initially set croppedImage to original
     notifyListeners();
   }
 
-  // Set the filtered or cropped image
+  // Set the cropped image and notify listeners
   void setCroppedImage(File image) {
     croppedImage = image;
-    notifyListeners();  // Notify listeners after updating the image
+    notifyListeners();
   }
 
+  // Set the filtered image and notify listeners
   void setFilteredImage(File filteredImage) {
     croppedImage = filteredImage;
-    notifyListeners();  // Notify listeners so the UI updates with the filtered image
+    notifyListeners();
   }
-
 
   // Crop the image with custom UI settings
   Future<void> cropImage(File imageFile) async {
@@ -42,18 +41,13 @@ class EditProvider extends ChangeNotifier {
       ],
       androidUiSettings: AndroidUiSettings(
         toolbarTitle: 'Custom Crop Image',
-        // Custom title for toolbar
         initAspectRatio: CropAspectRatioPreset.original,
-        // Default aspect ratio for cropping
         lockAspectRatio: false,
         toolbarColor: Colors.deepPurple,
-        // Toolbar color
         toolbarWidgetColor: Colors.white,
-        // Widget color in toolbar
         activeControlsWidgetColor: Colors.deepPurple,
         cropFrameColor: Colors.white,
         cropGridColor: Colors.white,
-
       ),
     );
 
@@ -62,35 +56,26 @@ class EditProvider extends ChangeNotifier {
     }
   }
 
-
-
-  changeImage(File image) async {
-    currentImage = await image.readAsBytes(); // تحويل ملف الصورة إلى Uint8List
-    setFilteredImage(image);
-  }
-    notifyListeners();
+  // Change the image (e.g., when applying a filter or changing the image)
+  Future<void> changeImage(File image) async {
+    currentImage = await image.readAsBytes(); // Convert image file to Uint8List
+    setFilteredImage(image); // Set the filtered image
+    notifyListeners(); // Notify listeners after changing the image
   }
 
+  // Toggle the mirror effect on the cropped image
+  void toggleMirror() {
+    if (croppedImage != null) {
+      final imageBytes = croppedImage!.readAsBytesSync();
+      final img.Image? originalImage = img.decodeImage(imageBytes);
 
-  // Future<void> toggleMirror() async {
-  //   if (croppedImage != null) {
-  //     final imageBytes = croppedImage!.readAsBytesSync();
-  //     final img.Image? originalImageData = img.decodeImage(imageBytes);
-  //
-  //     if (originalImageData != null) {
-  //       // Flip the image horizontally
-  //       final mirroredImage = img.flipHorizontal(originalImageData);
-  //
-  //       final mirroredFile = File('${Directory.systemTemp.path}/mirrored_image.jpg')
-  //         ..writeAsBytesSync(img.encodeJpg(mirroredImage));
-  //
-  //       setCroppedImage(mirroredFile);
-  //       isMirrored = !isMirrored; // Toggle the mirroring state
-  //     } else {
-  //       debugPrint("Failed to decode image.");
-  //     }
-  //   } else {
-  //     debugPrint("No image available to mirror.");
-  //   }
-  // }
+      if (originalImage != null) {
+        final mirroredImage = img.flipHorizontal(originalImage);
+        final mirroredFile = File('${Directory.systemTemp.path}/mirrored_image.jpg')
+          ..writeAsBytesSync(img.encodeJpg(mirroredImage));
 
+        setCroppedImage(mirroredFile); // Set the mirrored image
+      }
+    }
+  }
+}
