@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
@@ -7,13 +8,27 @@ import 'package:image/image.dart' as img;
 class EditProvider extends ChangeNotifier {
 
   File? croppedImage;
-  bool isMirrored = false; // for mirror effect
+  Uint8List?  currentImage;
+  File? originalImage; // Store the original image
+  bool isMirrored = false; // Track mirroring state
 
-  // Set the cropped image
-  void setCroppedImage(File image) {
-    croppedImage = image;
+  void setOriginalImage(File image) {
+    originalImage = image;
+    croppedImage = image; // Initially set croppedImage to original
     notifyListeners();
   }
+
+  // Set the filtered or cropped image
+  void setCroppedImage(File image) {
+    croppedImage = image;
+    notifyListeners();  // Notify listeners after updating the image
+  }
+
+  void setFilteredImage(File filteredImage) {
+    croppedImage = filteredImage;
+    notifyListeners();  // Notify listeners so the UI updates with the filtered image
+  }
+
 
   // Crop the image with custom UI settings
   Future<void> cropImage(File imageFile) async {
@@ -47,30 +62,35 @@ class EditProvider extends ChangeNotifier {
     }
   }
 
-  void toggleMirror() {
-    debugPrint("Toggle Mirror called.");
 
-    if (croppedImage != null) {
-      debugPrint("Cropped image found. Proceeding with mirroring.");
 
-      final imageBytes = croppedImage!.readAsBytesSync();
-      final img.Image? originalImage = img.decodeImage(imageBytes);
-
-      if (originalImage != null) {
-        debugPrint("Image decoded successfully. Mirroring image...");
-        final mirroredImage = img.flipHorizontal(originalImage);
-
-        final mirroredFile = File('${Directory.systemTemp.path}/mirrored_image.jpg')
-          ..writeAsBytesSync(img.encodeJpg(mirroredImage));
-
-        setCroppedImage(mirroredFile);
-        debugPrint("Mirrored image saved and updated.");
-      } else {
-        debugPrint("Failed to decode the image.");
-      }
-    } else {
-      debugPrint("No cropped image available to mirror.");
-    }
+  changeImage(File image) async {
+    currentImage = await image.readAsBytes(); // تحويل ملف الصورة إلى Uint8List
+    setFilteredImage(image);
+  }
+    notifyListeners();
   }
 
-}
+
+  // Future<void> toggleMirror() async {
+  //   if (croppedImage != null) {
+  //     final imageBytes = croppedImage!.readAsBytesSync();
+  //     final img.Image? originalImageData = img.decodeImage(imageBytes);
+  //
+  //     if (originalImageData != null) {
+  //       // Flip the image horizontally
+  //       final mirroredImage = img.flipHorizontal(originalImageData);
+  //
+  //       final mirroredFile = File('${Directory.systemTemp.path}/mirrored_image.jpg')
+  //         ..writeAsBytesSync(img.encodeJpg(mirroredImage));
+  //
+  //       setCroppedImage(mirroredFile);
+  //       isMirrored = !isMirrored; // Toggle the mirroring state
+  //     } else {
+  //       debugPrint("Failed to decode image.");
+  //     }
+  //   } else {
+  //     debugPrint("No image available to mirror.");
+  //   }
+  // }
+
